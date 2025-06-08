@@ -13,21 +13,20 @@ class AdminSeeder extends Seeder
         // Get the User Provider
         $users = new UserModel();
 
-        // Get admin details from .env
-        $email = getenv('app.adminEmail') ?: 'admin@example.com';
+        // Get admin details from .env or fallback values
+        $email    = getenv('app.adminEmail') ?: 'admin@example.com';
         $username = getenv('app.adminUsername') ?: 'admin';
         $password = getenv('app.adminPassword') ?: 'Admin123!';
 
         // Check if admin user already exists
         $existingUser = $users->where('username', $username)->first();
-        
+
         if ($existingUser) {
-            // Skip if admin already exists
             echo "Admin user already exists. Skipping creation.\n";
             return;
         }
 
-        // Create the admin user
+        // Create the admin user entity
         $user = new User([
             'username' => $username,
             'email'    => $email,
@@ -35,17 +34,27 @@ class AdminSeeder extends Seeder
             'active'   => 1,
         ]);
 
-        // Save the user
-        $users->save($user);
+        // Save the user and get the inserted ID
+        if (!$users->save($user)) {
+            echo "Failed to create admin user.\n";
+            print_r($users->errors());
+            return;
+        }
 
-        // Add to admin group
-        $user->addGroup('admin');
+        // Retrieve the user back from DB to ensure ID is set
+        $savedUser = $users->find($users->getInsertID());
 
-        // Add to user group
-        $user->addGroup('user');
+        if (!$savedUser) {
+            echo "Failed to retrieve newly created admin user.\n";
+            return;
+        }
 
-        // Activate the user
-        $user->activate();
+        // Assign groups
+        $savedUser->addGroup('admin');
+        $savedUser->addGroup('user');
+
+        // (Optional) Activate the user (usually redundant if 'active' is set)
+        $savedUser->activate();
 
         echo "Admin user created successfully.\n";
     }
