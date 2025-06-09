@@ -40,8 +40,13 @@ class Users extends BaseController
             return redirect()->to('/')->with('error', 'You do not have permission to access that page.');
         }
 
-        // Get all groups
-        $groups = $this->groupModel->findAll();
+        // Get unique groups from the auth_groups_users table
+        $db = \Config\Database::connect();
+        $groups = $db->table('auth_groups_users')
+            ->select('`group`')
+            ->distinct()
+            ->get()
+            ->getResultArray();
 
         return view('pages/admin/users/create', [
             'groups' => $groups
@@ -102,8 +107,13 @@ class Users extends BaseController
             return redirect()->to('admin/users')->with('error', 'User not found.');
         }
 
-        // Get all groups
-        $groups = $this->groupModel->findAll();
+        // Get unique groups from the auth_groups_users table
+        $db = \Config\Database::connect();
+        $groups = $db->table('auth_groups_users')
+            ->select('`group`')
+            ->distinct()
+            ->get()
+            ->getResultArray();
 
         // Get user groups
         $userGroups = $user->getGroups();
@@ -164,7 +174,18 @@ class Users extends BaseController
         $this->userModel->save($user);
 
         // Update user groups
-        $user->syncGroups($this->request->getPost('groups'));
+        // First remove all existing groups
+        foreach ($user->getGroups() as $group) {
+            $user->removeGroup($group);
+        }
+        
+        // Then add the selected groups
+        $groups = $this->request->getPost('groups');
+        if (is_array($groups)) {
+            foreach ($groups as $group) {
+                $user->addGroup($group);
+            }
+        }
 
         return redirect()->to('admin/users')->with('message', 'User updated successfully.');
     }

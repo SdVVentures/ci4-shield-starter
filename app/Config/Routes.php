@@ -25,6 +25,10 @@ $routes->group('admin', ['filter' => 'group:admin'], function ($routes) {
     $routes->get('users/edit/(:num)', 'Admin\Users::edit/$1');
     $routes->post('users/update/(:num)', 'Admin\Users::update/$1');
     $routes->get('users/delete/(:num)', 'Admin\Users::delete/$1');
+    
+    // Settings
+    $routes->get('settings', 'Admin\Settings::index');
+    $routes->post('settings/update', 'Admin\Settings::update');
 });
 
 // Auth Routes (Shield)

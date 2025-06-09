@@ -48,11 +48,11 @@
                     <?php foreach ($groups as $group): ?>
                         <div class="col-md-4 mb-2">
                             <div class="form-check">
-                                <input class="form-check-input" type="checkbox" name="groups[]" value="<?= $group['name'] ?>" id="group_<?= $group['name'] ?>" 
-                                    <?= in_array($group['name'], old('groups', $userGroups)) ? 'checked' : '' ?>>
-                                <label class="form-check-label" for="group_<?= $group['name'] ?>">
-                                    <?= esc($group['title']) ?>
-                                    <small class="d-block text-muted"><?= esc($group['description']) ?></small>
+                                <input class="form-check-input" type="checkbox" name="groups[]" value="<?= $group['group'] ?>" id="group_<?= $group['group'] ?>" 
+                                    <?= in_array($group['group'], old('groups', $userGroups)) ? 'checked' : '' ?>>
+                                <label class="form-check-label" for="group_<?= $group['group'] ?>">
+                                    <?= esc(ucfirst($group['group'])) ?>
+                                    <small class="d-block text-muted"><?= esc($group['group'] == 'admin' ? 'Administrator access' : 'Regular user access') ?></small>
                                 </label>
                             </div>
                         </div>
