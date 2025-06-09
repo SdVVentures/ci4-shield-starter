@@ -10,6 +10,7 @@
         <p class="lead">A modern starter template for CodeIgniter 4 with Shield authentication</p>
         <?php if (!auth()->loggedIn()): ?>
             <div class="mt-4">
+                <a href="https://github.com/SdVVentures/ci4-shield-starter" class="btn btn-secondary btn-lg me-2">GitHub</a>
                 <a href="<?= site_url('register') ?>" class="btn btn-primary btn-lg me-2">Get Started</a>
                 <a href="<?= site_url('login') ?>" class="btn btn-outline-secondary btn-lg">Login</a>
             </div>
