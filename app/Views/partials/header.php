@@ -30,13 +30,6 @@
                     <li class="nav-item">
                         <a class="nav-link" href="<?= site_url() ?>">Home</a>
                     </li>
-                    <?php if (auth()->loggedIn()): ?>
-                        <?php if (auth()->user()->inGroup('admin')): ?>
-                        <li class="nav-item">
-                            <a class="nav-link" href="<?= site_url('admin') ?>">Admin Dashboard</a>
-                        </li>
-                        <?php endif; ?>
-                    <?php endif; ?>
                 </ul>
                 <ul class="navbar-nav">
                     <?php if (auth()->loggedIn()): ?>
@@ -46,6 +39,9 @@
                             </a>
                             <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                 <li><a class="dropdown-item" href="<?= site_url('account/settings') ?>">Account Settings</a></li>
+                                <?php if (auth()->loggedIn() && auth()->user()->inGroup('admin')): ?>
+                                <li><a class="dropdown-item" href="<?= site_url('admin') ?>">Admin Dashboard</a></li>
+                                <?php endif; ?>
                                 <li><hr class="dropdown-divider"></li>
                                 <li><a class="dropdown-item" href="<?= site_url('logout') ?>">Logout</a></li>
                             </ul>
